@@ -1,0 +1,13 @@
+{
+  "name": "npm_test",
+  "version": "1.0.0",
+  "main": "\"\"",
+  "scripts": {
+    "test": "dev"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+  }
+}

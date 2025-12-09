@@ -6,7 +6,7 @@ def getStdIn():
 
 def getDepCheckNames(inTxt):
 	names = [l for l in inTxt if l[0] == '*']
-	names = [l[2:l.index(':')] for l in names]
+	names = [l[2:l.index(':')] for l in names if ':' in l]
 	return names
 
 def useDepCheck():

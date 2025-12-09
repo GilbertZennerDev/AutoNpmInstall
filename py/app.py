@@ -23,11 +23,7 @@ def installDepCheck():
 	sp.run(f"npm install -g depcheck", shell=True, check=True)
 
 def main():
-	av = sys.argv
-	ac = len(av)
-	#installDepCheck()
-	names = useDepCheck()
-	installPackages(names)
+	installPackages(useDepCheck())
 if __name__ == "__main__":
 	main()
 	

@@ -19,9 +19,13 @@ def installPackages(names):
 	for name in names:
 		sp.run(f"npm install {name}", shell=True, check=True)
 
+def installDepCheck():
+	sp.run(f"npm install -g depcheck", shell=True, check=True)
+
 def main():
 	av = sys.argv
 	ac = len(av)
+	#installDepCheck()
 	names = useDepCheck()
 	installPackages(names)
 if __name__ == "__main__":

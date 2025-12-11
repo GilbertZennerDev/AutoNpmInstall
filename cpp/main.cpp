@@ -20,19 +20,22 @@ std::vector<std::string> getDepCheckNames(std::vector<std::string> inTxt)
 	return (depCheckNames);	
 }
 
-void runfork(std::string name)
+void runfork(std::vector<std::string> names)
 {
-	//npm install x
-	char	**cmds;
 	unsigned int	i;
-	pid_t	pid;
+	pid_t			pid;
+	char			**cmds;
 
-	cmds = (char **)malloc(sizeof(char *) * 4);
+	cmds = (char **)malloc(sizeof(char *) * names.size() + 3);
 	cmds[0] = strdup("npm");
 	cmds[1] = strdup("install");
-	cmds[2] = strdup(name.c_str());
-	cmds[3] = NULL;
-	std::cout << "Installing " << name << "\n";
+	i = 0;
+	while (i < names.size())
+	{
+		cmds[i + 2] = strdup(names[i].c_str());
+		++i;
+	}
+	cmds[names.size() + 2] = NULL;
 	pid = fork();
 	if (pid == 0)
 		execvp(cmds[0], cmds);
@@ -40,12 +43,13 @@ void runfork(std::string name)
 	{
 		wait(NULL);
 		i = 0;
-		while (i < 4)
+		while (i < names.size() + 3)
 			free(cmds[i++]);
 		free(cmds);
 	}
 }
 
+/*
 void installPackages(std::vector<std::string> names)
 {
 	unsigned int	i;
@@ -56,7 +60,7 @@ void installPackages(std::vector<std::string> names)
 		runfork(names[i++]);
 		sleep(10);
 	}
-}
+}*/
 
 std::vector<std::string> getStdIn()
 {
@@ -76,6 +80,6 @@ int	main(int ac, char **av)
 
 	inTxt = getStdIn();
 	names = getDepCheckNames(inTxt);
-	installPackages(names);
+	runfork(names);
 	return (0);
 }

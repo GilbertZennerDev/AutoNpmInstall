@@ -1,68 +1,81 @@
-/*
-import sys
-import subprocess as sp
-
-def getStdIn():
-	return [l for l in sys.stdin]
-
-def getDepCheckNames(inTxt):
-	names = [l for l in inTxt if l[0] == '*']
-	names = [l[2:l.index(':')] for l in names]
-	return names
-
-def useDepCheck():
-	inTxt = getStdIn()
-	return getDepCheckNames(inTxt)
-
-def installPackages(names):
-	if names == []: return
-	print(names)
-	for name in names:
-		sp.run(f"npm install {name}", shell=True, check=True)
-
-def installDepCheck():
-	sp.run(f"npm install -g depcheck", shell=True, check=True)
-
-def main():
-	installPackages(useDepCheck())
-if __name__ == "__main__":
-	main()
-*/
-
 #include <string>
+#include <vector>
 #include <iostream>
+#include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
-
-//wei geet daat am C++? wei kann ech am C++ den stdin liesen?
-//ech schreiwen mir mol eng Zeil fake Content
-
-void bla()
+std::vector<std::string> getDepCheckNames(std::vector<std::string> inTxt)
 {
-	std::string line = "fastify";
-	std::cout << line << " will  be installed...\n";
+	unsigned int				i;
+	std::vector<std::string>	depCheckNames;
+
+	i = 0;	
+	while (i < inTxt.size())
+	{
+		if (inTxt[i][0] == '*')
+			depCheckNames.push_back(inTxt[i].substr(2, inTxt[i].find(':') - 2));
+		++i;
+	}
+	return (depCheckNames);	
 }
 
-void runfork()
+void runfork(std::string name)
 {
 	//npm install x
-	std::string cmds_s[3];
-	cmds_s[0] = "npm";
-	cmds_s[1] = "install";
-	cmds_s[2] = "fastify";
-	execvp(cmds_s[0].c_str(), cmds_s.c_str())	
+	char	**cmds;
+	unsigned int	i;
+	pid_t	pid;
+
+	cmds = (char **)malloc(sizeof(char *) * 4);
+	cmds[0] = strdup("npm");
+	cmds[1] = strdup("install");
+	cmds[2] = strdup(name.c_str());
+	cmds[3] = NULL;
+	std::cout << "Installing " << name << "\n";
+	pid = fork();
+	if (pid == 0)
+		execvp(cmds[0], cmds);
+	else
+	{
+		wait(NULL);
+		i = 0;
+		while (i < 4)
+			free(cmds[i++]);
+		free(cmds);
+	}
 }
 
-/*def getDepCheckNames(inTxt):
-	names = [l for l in inTxt if l[0] == '*']
-	names = [l[2:l.index(':')] for l in names]
-	return names	
-*/
+void installPackages(std::vector<std::string> names)
+{
+	unsigned int	i;
+
+	i = 0;
+	while (i < names.size())
+	{
+		runfork(names[i++]);
+		sleep(10);
+	}
+}
+
+std::vector<std::string> getStdIn()
+{
+	std::vector<std::string>	content;
+	std::string					input_line;
+	while(std::cin) {
+        getline(std::cin, input_line);
+        content.push_back(input_line);
+    };
+	return (content);
+}
 
 int	main(int ac, char **av)
 {
-	if (0)
-		return (1);
-	std::cout << "C++ Time Now!\n";
-	bla();
+	std::vector<std::string> inTxt;
+	std::vector<std::string> names;
+
+	inTxt = getStdIn();
+	names = getDepCheckNames(inTxt);
+	installPackages(names);
 	return (0);
 }

@@ -23,12 +23,17 @@ void	getStdIn(char buffer[], char **content)
 	(*content)=strdup(buffer);
 }
 
+//void get
+
 void	getCurrentLine(char *content)
 {
 	char	*line;
+	char	*new_content;
 
-	strncpy(line, strchr(content, '*' + 1), strlen(content));
-	printf("debug line: %s", line);
+	strncpy(new_content, strchr(content, '*') + 2, strlen(content));
+	printf("debug new_content:%s.", new_content);
+	strncpy(line, new_content, *new_content + *strchr(new_content, ' '));
+	printf("debug line:%s.", line);
 }
 
 void	ft_runfork(char *name)

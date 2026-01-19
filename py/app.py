@@ -24,28 +24,7 @@ def installDepCheck():
 
 def main():
 	installPackages(useDepCheck())
+
 if __name__ == "__main__":
 	main()
-	
-"""
-stash
-#if ac == 2:
-	#	if av[1] == "depcheck": names = useDepCheck()
-		#elif av[1] == "errormsgs": names = useErrMsgs()
-	#	else: print("First arg must be depcheck or errormsgs"); exit()
-	#else: print("Usage: tsc | python app.py errormsgs"); exit()
 
-
-def getModuleNames(inTxt):
-	inTxt = [l for l in inTxt if "Cannot find module" in l]
-	modNames = []
-	for l in inTxt:
-		parts = l.split(' ')
-		name = parts[parts.index('module') + 1][1:-1]
-		modNames.append(name)
-	return modNames
-
-def useErrMsgs():
-	inTxt = getStdIn()
-	return getModuleNames(inTxt)
-"""
